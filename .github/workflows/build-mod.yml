@@ -1,4 +1,3 @@
-# Đặt file này vào: .github/workflows/build-mod.yml trong repo buildmodpack-creator/elancte
 # Build jar trên runner của GitHub (có truy cập Fabric Maven, Mojang, Maven Central).
 # Chạy: tab Actions -> "Build Spectre mod" -> Run workflow, hoặc tự chạy khi push zip.
 
@@ -11,6 +10,7 @@ on:
       - 'Spectre_1.21.4_full_source.zip'
       - 'Spectre_1.21.4_fixed_source.zip'
       - '.github/workflows/build-mod.yml'
+      - '.github/scripts/dump-api.sh'
 
 jobs:
   build:
@@ -47,6 +47,11 @@ jobs:
         run: |
           set -o pipefail
           gradle build --no-daemon 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+
+      - name: Dump Minecraft API signatures (porting reference)
+        if: always()
+        continue-on-error: true
+        run: bash .github/scripts/dump-api.sh
 
       - name: Upload mod jar (không kèm -sources)
         if: success()
