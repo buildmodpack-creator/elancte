@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Dumps public/protected API signatures of the Loom-mapped Minecraft jar (Mojang names).
+# Dumps all (incl. private) API signatures of the Loom-mapped Minecraft jar (Mojang names).
 # Used only as a porting reference; prints the result to the job log.
 set -u
 TMP="${RUNNER_TEMP:-/tmp}"
@@ -26,7 +26,7 @@ unzip -Z1 "$JAR" \
 echo "classes to dump: $(wc -l < "$TMP/api-classes.txt")"
 
 : > "$OUT"
-xargs -a "$TMP/api-classes.txt" -n 150 javap -protected -cp "$JAR" >> "$OUT" 2>> "$TMP/javap.err"
+xargs -a "$TMP/api-classes.txt" -n 150 javap -p -cp "$JAR" >> "$OUT" 2>> "$TMP/javap.err"
 [ -s "$TMP/javap.err" ] && head -5 "$TMP/javap.err"
 echo "dump lines: $(wc -l < "$OUT")  bytes: $(wc -c < "$OUT")"
 cat "$OUT"
