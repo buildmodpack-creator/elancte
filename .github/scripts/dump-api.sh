@@ -26,6 +26,7 @@ unzip -Z1 "$JAR" \
 echo "classes to dump: $(wc -l < "$TMP/api-classes.txt")"
 
 : > "$OUT"
-xargs -a "$TMP/api-classes.txt" -n 150 javap -public -protected -cp "$JAR" >> "$OUT" 2>/dev/null
+xargs -a "$TMP/api-classes.txt" -n 150 javap -protected -cp "$JAR" >> "$OUT" 2>> "$TMP/javap.err"
+[ -s "$TMP/javap.err" ] && head -5 "$TMP/javap.err"
 echo "dump lines: $(wc -l < "$OUT")  bytes: $(wc -c < "$OUT")"
 cat "$OUT"
